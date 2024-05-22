@@ -1,0 +1,128 @@
+             !!!         .???#
+             !!!         .....
+             !!!         .....
+              B          .....
+              B          .....
+              +          .....
+              +          .....
+              +          .....
+              +      ss  .....
+  ss          +      ss  .....
+  ss          +      MM  .....
+  MM     ss   +          .....
+         ss   +          .....
+    ss   MM   +          .....
+    ss        +          .....
+    MM        +      ss  .....
+              +      ss  .....
+  ss          +      MM  .....
+  ss          +          .....
+  MM   ss     +          .....
+       ss     +          .....
+       MM     +          .....
+   ss         + #####mmmm#tttt
+   ss         +    ##OOO #tttt
+   MM   ++    +    ##OOO #tttt
+       ++###  +    ##OOO #tttt
+       +      +    ##mmmm#tttt
+      ++      +          #tttt
+       ++     +          #tttt
+        ++    +          #tttt
+   #####  +   +          #tttt
+         ++   +     ######tttt
+         +##  +          #tttt
+        ++    +          #tttt
+       ++     +          #tttt
+    ++++      +          #tttt
+   ++  #####  +          #tttt
+   + #        +          #tttt
+   ++         +          #tttt
+    +++       +          #tttt
+      ++      +          #tttt
+   ####++     +          #tttt
+        ++    +          #tttt
+        #+    +          #tttt
+         ++   +          #tttt
+         +    +          #tttt
+         ##   +          #tttt
+              +          #tttt
++++++++++++++ +  +++++   #tttt
+##############+ ##########tttt
+#{{{{{{{{{{{{{+ {{{{{{{{{#tttt
+#    ss   ss  +     ss   #tttt
+#    ss   ss  +     ss   #tttt
+##############+ ##########tttt
+\++           +    OOO   #tttt
+\+++          +    OOO   #tttt
+#\ +          +    OOO   #tttt
+#\ +          +          #tttt
+##\++         +         C#tttt
+##\ +         +  #####  C#tttt
+###\++        +          #tttt
+###\++++      +          #tttt
+####\++++     +          #tttt
+####\++++     +   ####   #tttt
+#####\++++    +          #tttt
+#####\++++    +          #tttt
+      ++++    +          #tttt
+      ++++    +    ###   #tttt
+      #+++    +         C#tttt
+      ++++    +         C#tttt
+ss    ++++    +          #tttt
+ss    #+++    +          #tttt
+##\   ++++    +          #tttt
+##\   ++++    +          #tttt
+##\\  #+++    +          #tttt
+##\\  ++++    +          #tttt
+      ++++    +          #tttt
+      ####    +          #tttt
+              +         C#tttt
+              +         C#tttt
+########}}}   +          #tttt
+###########}}}+          #tttt
+##############+ )        #tttt
+##############+ #}}}     #tttt
+##############+ ####mmm# #tttt
+     #L       +     OOO# #tttt
+     #H       +     OOO# #tttt
+     .h       +     OOO# #tttt
+     .        +        #C#tttt
+     .        +        #C#tttt
+     #\       +       <# #tttt
+     #\       +       <# #tttt
+     ##)      +      (## #tttt
+     ###)     +     (### #tttt
+     ####>>   +   //#### #tttt
+     ######}}}+ //###### #tttt
+     #########+ ######## #tttt
+     #########+ ######## #tttt
+     #++++++++++++++++++C#tttt
+     #++++++++++++++++++C#tttt
+     #++++++++++++++++++ #tttt
+     #++++++++++++++++++ #tttt
+     #++++++++++++++++++ #tttt
+     #********+ ******** #tttt
+     ########Q+ Q####### #tttt
+     #  ss    +          #tttt
+     #  ss    +          #tttt
+     #   M    +     ss   #tttt
+     #        +     ss  C#tttt
+   QQ#  ss    +     M   C#tttt
++++++#  ss    +          #tttt
++++++#   M    +     ss   #tttt
++++++#        +     ss   #tttt
+QQ+++#  ss    +     M    #tttt
++++++#  ss    +          #tttt
++++++#   M    +     ss   #tttt
++++++#        +     ss   #tttt
++++QQ#  ss    +     M    #tttt
++++++#  ss    +         C#tttt
++++++#   M    +     ss  C#tttt
++++++#        +     ss   #tttt
+QQ+++#        +     M    #tttt
++++++#        +          #tttt
++++++#        +          #tttt
++++QQ ++++++++++++++++++++tttt
+++++++++++++++++++++++++++tttt
+++++++++ +++++++++++++++++tttt
+##############################

@@ -1,0 +1,46 @@
+M??????????????????????????? M
+M      jjj  OOO  kkk         M
+M      jjj  OOO  kkk         M
+M +    jjj  OOO  kkk         M
+M Q         +++         Q   +M
+M                           QM
+M   Q                        M
+M              ,,            M
+MQ        ,,   ,,            M
+M         ,,   ,,          Q M
+M         ,,                 M
+M                            M
+M      ,,                    M
+M Q    ,,                   QM
+M      ,,          ,,        M
+M                  ,,        M
+M                  ,,        M
+MQ                         Q M
+M                            M
+M                            M
+M                            M
+M Q                         QM
+M               ,,           M
+M       ,,      ,,           M
+M       ,,      ,,        Q  M
+MQ      ,,                   M
+M                            M
+M                           QM
+M                            M
+M Q               ,,         M
+M                 ,,         M
+M                 ,,      Q  M
+M       ,,                   M
+MQ      ,,                   M
+M       ,,        ,,        QM
+M                 ,,         M
+M                 ,,         M
+M Q                          M
+M                  jjj     Q M
+M        ,,        jjj       M
+M        ,,        jjj       M
+MQ       ,,                  M
+M   ll      ll!!!  ll     llQM
+M   ll ss   ll!!!  llss   ll M
+M   ll ss   ll!!!  llss   ll M
+MMMMMMMMMMMMMMMMMMMMMMMMMMMMMM

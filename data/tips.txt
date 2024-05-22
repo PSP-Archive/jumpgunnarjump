@@ -1,0 +1,33 @@
+You need to run Shephard's gauntlet to survive.  Good luck.
+Use left and right arrows to move.
+Use X to jump, and hold X for a higher jump
+Use O to shoot.  Hold Up and Down to shoot up and down.
+'+' Collect fruit, to use an exit.  You need 50% on most levels.
+'#' is solid ground.  You can walk on it, or jump up to platforms made from it.
+'B' Use triangle to fire bombs if you have ammo left.
+'.' Shooting (O) or bombs (triangle) can open secret areas.
+'^' You will restart at a check point if you die.
+'m' Bombs can be used to open some special floors.  Hit O + Down.
+'w' Bombs can be used to open some special ceilings.  Hit O + Up.
+Use SELECT to reset a level, if you mess up.
+'O' Rings are hidden on the levels and are a secondary objective.
+'2' These platforms can be walked in front of or on top of.
+'H' Full Health.  Look for them hidden around levels.
+'L' Free life.  Very rare.
+'T' Clocks, which are collectable antiques.
+'h' Part health.  Restores 20% of player health.
+'!' Gunnar, the woe begotten hero.
+'s' Dagros the cow, one of Shephard's Shooting Henchmen.  Requires four shots, or 1 bomb to kill.
+'C' Karians the wall climbing Henchman.  Requires two shots to kill.
+'*' Nisses Henchman, who are magical creatures like an elf or brownie.
+'t' Trampoline.  Hold X to jump extra high.
+'{' Kurtians the bird, one of Shepherd's Henchmen.  Requires 1 shot or 1 bomb to kill.
+'E' Evil Duck, one of Shepherd's Henchmen.  Requres 6 shots or 1 bomb to kill.
+'?' The exit gate is the way to the next level if you have enough fruit.
+'l' Trees are purely decorative.  Isn't Shephard thoughtful?
+'f' Fences are purely decorative.  Doesn't Shepherd have good taste.
+'Q' There is ground that is destroyed by walking on it.
+'v' There is ground that is destroyed by bombing it.
+'Z' Teleporters can be activated with square.
+'R' Red doors can only be opened if you get the red key first.
+'r' Red keys are vauable for opening red doors.

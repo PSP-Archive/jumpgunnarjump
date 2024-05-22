@@ -1,0 +1,142 @@
+" Made by:   wilhel1812
+" Version:   0.1.4
+" Mail:      wilhelm.francke@gmail.com
+" MSNM:      wilhelm_francke@hotmail.com
+" Gtalk:     wilhelm.francke
+" AIM:       wilhelmfrancke
+" YIM:       the_actionboy
+" Internet:  http://wilhelm.francke.googlepages.com
+" Internet:  http://www.pspsmm.com
+" 
+" ENJOY!
+" 
+" 
+" 
+6!!! 1222222222222223         ++++++ +     ++++                  +++             +++++++             +++ + +    + + ++      tttt
+6!!! M448888888888886         +  + + ++   +     + +  ++  + ++  +++++++++++++++ ++      ++  +    +    +++      ++  ++++++++  tttt
+6!!! M46???..........        ++     +  + +     ++     ++++ ++ +++    ++ ++++ ++ +      + + ++ ++   ++ ++ +  + ++  ++  ++    tttt
+6 +  M46???..........       ++      +  +      +    +  + +     + ++      ++ +++ +  ++  +  +  +++ + +  +  + ++  +  + +++ +    tttt
+6 +  M46???..........       +       +  + +   +       +   tttt++ ++ ++++++  +++     +++    + + ++    tttt +  + +  +          tttt
+6 +  M462222222222222       +            +    +     ++ ttttttt+  +    +tttt+  +     +     tttt       +   ++  +  +tttt   tttttttt
+6 +  M588888888888889       ++      +    + +++++   +tttt   +    ++tttt+ +  +  +      +tttt  +         +  tttt+  + +  !      tttt
+6 +  M29                      + + + +        tttt  tttt           +       tttt    + tttt  +    tttt tttt ++ + tttt+         tttt
+6 +  M2                             ttttttt +    tttt +    +tttt      +    ++ tttt        ++           ++++    +   +    ttt tttt
+6 +  M2                           tttt   tttt        ++ + ++      tttt+     + +++  +   + ++     tttt       +  + ++   +      tttt
+6 +  M2              1tttt3       tttt       +   ttttttt           +  +      ++  ++t+t    +tttt            tttt       tttt  tttt
+6 +  M2              722229           tttttttt         tttt      tttt ++    +++  ++                    tttt      +    ++    tttt
+6 +  M2                           tttt         +  + ++     tttt       +++++tttt++      tttt                    tttt+++      tttt
+6 +  M2                                                      tttt                          tttt  ttttttt               tttt tttt
+6 +  M2                             tttt   tttttttt   ttttttt        tttt  tttt   tttt                      tttt  tttt      tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                 tttt tttt  tttt         tttt         tttt                          tttt             tttt
+6 +  M2                                                                   tttt        tttt     tttt                 tttt    tttt
+6 +  M2                            tttt    tttt                                                  tttt                       tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2                                                                                                                     tttt
+6 +  M2######################################################################                                               tttt
+6 +  M28888888888888888888888888888888888888888888888########################                                               tttt
+6 +  M2                                              ########################                                               tttt
+6 +  M2                                              ########################                                               tttt
+6 +  M2                                              ########################                                               tttt
+6 +  M2                                              ########################                                               tttt
+6 +  M2                                              ########################                                               tttt
+6 +  M2                                              ########################              OOO                              tttt
+6 +  M2                                              ########################              OOO                              tttt
+6 +  M2                                              ########################              OOO                              tttt
+6 +  M2                                              ............. .........#                                               tttt
+6 +  M2                                              ............. .........#                                               tttt
+6 +  M2D                                             .............^.........#                                               tttt
+6 +  M2D                                 +++         ..*.*.*.*.*.*^*.*.*.*..#                                               tttt
+6 +  M2                                +++//_________MMMMMMMMMMMMM  MMMMMM  M                                               tttt
+6 +  M2                              +++//###########MMMMMMMMMMMMM  MMMMMM  M                                               tttt
+6 +  M2                            +++//###MMMMMMMMMMMMMMMMMMMMMMM  MMMMMM  .                                               tttt
+6 +  M2                          +++//###MMMMMHBL..MMMM{{{{{{{{{{{ {{{{{{M  .                 123                           tttt
+6 +  M2                        +++//###MMMMMMMhhh...MMM{{{{{{{{{{{ {{{{{{M  .                 4M6                           tttt
+6 +  M2                      +++//###MMMMMMMMMYTS....MM{{{{{{{{{{{ {{{{{{MMMM>>               4M6                           tttt
+6 +  M2                    +++//###MMMMMMMMMMMMMM.....M            {{{{{{MMMM##>>       ,,    4M6                           tttt
+6 +  M2                  +++//###MMMMMMMMMMMMM.........            {{{{{{MMMM####>>     ,,    4M6                           tttt
+6 +  M2 !              +++//###MMMMMMMMMMMMMMM.........            {{{{{{MMMM######>>   ,,    4M6                           tttt
+6 +  M2              +++//###MMMMMMMMMMMMMMMMM.........                  ....78888889         4M6                           tttt
+6 +  M2D           +++//###MMMMMMMMMMMMMMMMMMM.........****..************....  ffffffffffll   4M6                           tttt
+6 +  M2D         +++//###MMMMMMMMMMMMMMMMMMMMM.........****..**h*********....  ffffffffffll   4M6                           tttt
+6 +  M2        +++//###MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM  MMMMMMMMMMMMMMMM>>ffffffffffll   4M6                           tttt
+6 +  M2        +//###MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM##############3++4M6                           tttt
+6 +  M2    ^   1###MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM555555555555556++4M6                           tttt
+6 +  M2    ^   75558888888888888888888888888888888888888888888888888888888888888888888888889++4M6                           tttt
+6 +  M2   13                                                                4M      ++  ++    4M6                           tttt
+6 +  M222229                                                                4M      ++  ++    4M6                           tttt
+6 +  M28889                                                                 4M      ++  22 ++ 4M6                           tttt
+6 +  M2                                                                     4M      ++  79 ++ 4M6                           tttt
+6 +  M2 OOO                                                                 4M      22     ++ 4M6                           tttt
+6 +  M2 O+O                                                                 4M      79     ++ 789                           tttt
+6 +  M2 OOO+                                                                4M   ++      ++22                               tttt
+6 +  M2    ++                                                               4M   ++      ++79                               tttt
+6 +  M2tttt +                                                               4M   ++      ++                                 tttt
+6 +  M22222 ++                                                              4M   ++  ++  ++                                 tttt
+6 +  788889  +                                                              4M   22  ++  22                                 tttt
+6 +          +!                                                             4M   79  ++  79                                 tttt
+6 +          ++ +++  +++                                                    4M       ++                                     tttt
+6 +           +++ ++++ ++                                                   4M  ++   22  ++                                 tttt
+6 +           ++   ++   +++++                                               4M  ++   79  ++                                 tttt
+6 +         1tttt3 22   22   ++                                             4M  ++       ++                                 tttt
+6 +         722229 79   79    ++                                            4M  ++     ++++                                 tttt
+6 +                            +                                            4M  22     ++22                                 tttt
+6 +                           122223                         123            4M  79     ++79                                 tttt
+6 +                           788889                         4M6            4M  ++++   ++                                   tttt
+6 +                            ++++                          4M6            4M  ++++   22                                   tttt
+6 +                            ++++                          4M6            4M  22++   79                                   tttt
+6 +                            ++++                          4M6            4M  79++++                                      tttt
+6 +                            tttt                         C4M6            4M    22++                                      tttt
+6 +                            ++++                         C4M6            4M    79++                                      tttt
+6 +                            ++++                         C4M6            4M    ++++                                      tttt
+6 +                            ++++              OOO        C4M6            4M    ++22                                      tttt
+6 +                            tttt              OOO        C4M6            4M    ++79                                      tttt
+6 +                            ++++              OOO        C4M6            4M    ++   ++                                   tttt
+6 +                            ++++                         C4M6            4M    22 ++++                                   tttt
+6 +                            ++++                         C4M6            4M    79 ++++                                   tttt
+6 +                            tttt                         C4M6            4M       ++++                                   tttt
+6 +                            ++++                         C4M6            4M     ++++22                                   tttt
+6 +                            ++++                         C4M6            4M     ++2279                                   tttt
+6 +                            ++++                         C4M6            4M     ++79                                     tttt
+6 +                            tttt                         C4M6            4M++++++++++++++++++++++++++++++++++++++++++++++tttt
+6 +                            ++++                         C4M6            4M+++++22+++++++++++++++++++++++++++++++++++++++tttt
+6 +                            ++++                         C4M6            4M+++++79+++++++++++++++++++++++++++++++++++++++tttt
+6 +                            ++++                         C4M6            4M++++++++++++++++++**++++++++++**++++++++++++**tttt
+6 +                            tttt                         C4M6            4MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+6 +                            ++++                         C4M6            4M                                                  
+6 +                            ++++                         C4M6            4M 155555553   153 15555555553   1555555555555555553
+6 +                            ++++                         C4M6            4M 5#5#5#5#5   5#5 5#5#####5#5   5##5#####5##6#####6
+6 +    +++   +++    ++++    ++ tttt                         C4M6            4M 5#5#5#5#5   5#555#5#55555#5   75#5#555#55#66666#6
+6 +   ++ ++ ++  +  ++  +   +++ ++++                         C4M6            4M 5#5#5#5#5   5#####5###5 5#5    5#5#####55#6#####6
+6 +   +   +++ ll++++    ++++  +++++                          4M6            4M 5#5#5#5#55555#555#5#55555#555535#5#555#55#6#66666
+6 +  ++       ll               ++++                          4M6            4M 5#####5#####5#5 5#5#####5#####55#5#####55#6#####6
+9 + ++   *    ll    *          tttt           ********       4M6            4M 755555555555559 755555555555559755555559755666669
+>>++//##############################>> //###################################4M                                                  
+############################################################################4MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
