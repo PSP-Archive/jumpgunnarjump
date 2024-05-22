@@ -1,0 +1,923 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0104 
+header_name {.h} 
+code_name {.cxx}
+decl {\#include<stdlib.h>} {} 
+
+decl {\#include<FL/Fl_file_Chooser.H>} {} 
+
+decl {\#include"engine.h"} {} 
+
+decl {int tile;} {} 
+
+decl {char currentlevel[256];} {} 
+
+decl {int proposed;} {} 
+
+decl {char levelComments[1024];} {} 
+
+decl {int timer[2];} {} 
+
+decl {int fruitRequired[2];} {} 
+
+Function {make_box()} {open
+} {
+  Fl_Window {} {open
+    xywh {4 23 104 100} type Double hide
+  } {
+    Fl_Box {} {
+      label label
+      xywh {25 25 25 25}
+    }
+  }
+} 
+
+decl {\#include <FL/Fl_PNG_Image.h>} {} 
+
+decl {Fl_PNG_Image *mapImage;} {} 
+
+decl {\#include<FL/fl_draw.h>} {} 
+
+class Fl_Editor_Map {: {public Fl_Box}
+} {
+  Function {draw()} {open return_type void
+  } {
+    code {proposed=0;
+draw_map();
+//proposed=1;
+if(proposed==1) {
+int x=Fl::event_x()-this->x();
+int y=Fl::event_y()-this->y();
+int w=1,h=1;
+struct TileProp *tileProp=tile_to_prop(tile);
+
+x=x/TILEWIDTH;
+y=y/TILEHEIGHT;
+
+if(tileProp) {
+	w=tileProp->gfxw;
+	h=tileProp->gfxh;
+}
+
+int i,j;
+for(j=0;j<h;j++) {
+	for(i=0;i<w;i++) {
+		draw_tile(tile+i+j*TILESACROSS,(x+i)*TILEWIDTH,(y+j)*TILEHEIGHT);
+	}
+}
+}} {}
+  }
+  Function {Fl_Editor_Map(int x,int y,int w,int h):Fl_Box(x,y,w,h)} {open
+  } {}
+  Function {handle(int event)} {open return_type int
+  } {
+    code {int state=Fl::event_state();
+
+if(event==FL_PUSH || (event==FL_DRAG && tile==-1) || (event==FL_DRAG && tile_to_prop(tile) && (tile_to_prop(tile)->flags&8)) || (event==FL_DRAG && tile_to_prop(tile) && (tile_to_prop(tile)->gfxw==1) && (tile_to_prop(tile)->gfxh==1)) || (event==FL_DRAG && (state&(FL_BUTTON2|FL_BUTTON3))) ) {
+	int x=Fl::event_x()-this->x();
+	int y=Fl::event_y()-this->y();
+	int w,h;
+	struct TileProp *tileProp;
+	int drawTile=tile;
+	if(state&FL_BUTTON2) drawTile=M_SOLIDGROUND;
+	if(state&FL_BUTTON3) drawTile=-1;
+
+	x=x/TILEWIDTH;
+	y=y/TILEHEIGHT;
+
+	tileProp=tile_to_prop(drawTile);
+	w=1;
+	h=1;
+	if(tileProp) {
+		printf("Setting tile %d,%d '%c'\\n",x,y,tileProp->ch);
+		w=tileProp->gfxw;
+		h=tileProp->gfxh;
+	} else {
+		printf("Setting %d,%d sky\\n",x,y);
+	}
+	save_undo(x,y,w,h,drawTile);
+	set_tiles(x,y,drawTile);
+	damage(FL_DAMAGE_ALL,x*TILEWIDTH,y*TILEHEIGHT,w*TILEWIDTH,h*TILEHEIGHT);
+	previewMap->damage(FL_DAMAGE_ALL);
+	previewMap->redraw();
+	redraw();
+
+	return 1;
+}
+\#if 0
+if(event==FL_MOVE) {
+	int x=Fl::event_x()-this->x();
+	int y=Fl::event_y()-this->y();
+	int w,h;
+	struct TileProp *tileProp;
+
+	x=x/TILEWIDTH;
+	y=y/TILEHEIGHT;
+
+	tileProp=tile_to_prop(tile);
+	w=1;
+	h=1;
+	if(tileProp && (tileProp->flags&8)==0) {
+		printf("Setting tile %d,%d '%c'\\n",x,y,tileProp->ch);
+		w=tileProp->gfxw;
+		h=tileProp->gfxh;
+	} else {
+		printf("Setting %d,%d sky\\n",x,y);
+	}
+	damage(FL_DAMAGE_ALL,(x-1)*TILEWIDTH,(y-1)*TILEHEIGHT,(w+1)*TILEWIDTH,(h+1)*TILEHEIGHT);
+	redraw();
+	return 1;
+}
+\#endif
+
+return 0;} {}
+  }
+} 
+
+class Fl_Preview_Map {open : {public Fl_Box}
+} {
+  Function {draw()} {open return_type void
+  } {
+    code {int x=this->x();
+int y=this->y();
+
+if(game.w<1 || game.h<1 || mapImage==NULL) return;
+
+uchar *buf=new uchar[game.w*game.h*3];
+const char *gfxBuf=mapImage->data()[0];
+int i,j;
+for(j=0;j<game.h;j++) {
+	for(i=0;i<game.w;i++) {
+		int tile=game.map[i+game.w*j];
+		int pos=(i+game.w*j);
+		
+		buf[pos*3]=0x88;
+		buf[pos*3+1]=0xcc;
+		buf[pos*3+2]=0xff;
+		if(tile>-1) {
+			int gfxPos=(tile%TILESACROSS)*TILEWIDTH+(tile/TILESACROSS)*TILEHEIGHT*TILEWIDTH*TILESACROSS;
+			gfxPos+=TILEWIDTH/2+TILEHEIGHT/2*TILEWIDTH*TILESACROSS;
+			gfxPos*=mapImage->d();
+			buf[pos*3]=gfxBuf[gfxPos+0];
+			buf[pos*3+1]=gfxBuf[gfxPos+1];
+			buf[pos*3+2]=gfxBuf[gfxPos+2];
+		}
+	}
+}
+
+if(game.w<w() || game.h<h()) {
+	fl_rectf(x,y,w(),h(),0,0,0);
+}
+fl_push_clip(x,y,w(),h());
+fl_draw_image(buf,x,y,game.w,game.h);
+fl_pop_clip();
+delete []buf;} {selected
+    }
+  }
+  Function {Fl_Preview_Map(int x,int y,int w,int h,const char *s):Fl_Box(x,y,w,h,s)} {open
+  } {}
+} 
+
+decl {int dirty;} {} 
+
+Function {} {} {
+  code {new_game();
+if(!mapImage) mapImage=new Fl_PNG_Image("gfx.png");} {}
+  Fl_Window mainWindow {
+    label {Jump Gunnar Jump Level Editor by HardHat} open
+    xywh {246 79 720 553} type Double deactivate visible
+  } {
+    Fl_Group {} {
+      label {Tile Selection}
+      xywh {10 40 710 185} box ROUNDED_BOX labeltype ENGRAVED_LABEL align 5
+    } {
+      Fl_Round_Button rb01 {
+        callback {tile=M_SOLIDGROUND;}
+        tooltip {Solid Ground} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/solidground.png} xywh {25 55 50 50} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb01,M_SOLIDGROUND);}
+      }
+      Fl_Round_Button rb02 {
+        callback {tile=M_SECRETAREA;}
+        tooltip {Secret Area} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/secretarea.png} xywh {75 55 50 50} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb02,M_SECRETAREA);}
+      }
+      Fl_Round_Button rb03 {
+        callback {tile=M_FANCYSOLIDGROUND;}
+        tooltip {Fancy Solid Ground} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/fancysolidground.png} xywh {130 55 50 50} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb03,M_FANCYSOLIDGROUND);}
+      }
+      Fl_Round_Button rb04 {
+        callback {tile=M_TREE;}
+        tooltip Tree image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/tree.png} xywh {180 55 50 50} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb04,M_TREE);}
+      }
+      Fl_Round_Button rb05 {
+        callback {tile=M_FENCE;}
+        tooltip Fence image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/fence.png} xywh {235 55 50 50} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb05,M_FENCE);}
+      }
+      Fl_Round_Button rb06 {
+        callback {tile=M_PLATFORMTL;}
+        tooltip {top left platform} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/TL.png} xywh {290 45 35 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb06,M_PLATFORMTL);}
+      }
+      Fl_Round_Button rb07 {
+        callback {tile=M_DECORATION1;}
+        tooltip {Decoration 1} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/deco1.png} xywh {410 45 65 55} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb07,M_DECORATION1);}
+      }
+      Fl_Round_Button rb08 {
+        callback {tile=M_DECORATION2;}
+        tooltip {Decoration 2} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/deco2.png} xywh {475 45 60 55} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb08,M_DECORATION2);}
+      }
+      Fl_Round_Button rb09 {
+        callback {tile=M_SLIPPERYL;}
+        tooltip {Slippery left} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/slipL.png} xywh {535 45 40 20} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb09,M_SLIPPERYL);}
+      }
+      Fl_Round_Button rb10 {
+        callback {tile=M_PLATFORMTL+1;}
+        tooltip {top platform} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/TL.png} xywh {325 45 40 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb10,M_PLATFORMTL+1);}
+      }
+      Fl_Round_Button rb11 {
+        callback {tile=M_PLATFORMTL+16;}
+        tooltip {left platform} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/TL.png} xywh {290 65 35 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb11,M_PLATFORMTL+16);}
+      }
+      Fl_Round_Button rb12 {
+        callback {tile=M_PLATFORMTL+17;}
+        tooltip {center platform} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/TL.png} xywh {325 65 40 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb12,M_PLATFORMTL+17);}
+      }
+      Fl_Round_Button rb13 {
+        callback {tile=M_PLATFORMTL+32;}
+        tooltip {bottom left platform} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/TL.png} xywh {290 85 35 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb13,M_PLATFORMTL+32);}
+      }
+      Fl_Round_Button rb14 {
+        callback {tile=M_PLATFORMTL+33;}
+        tooltip {bottom centre platform} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/TL.png} xywh {325 85 40 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb14,M_PLATFORMTL+33);}
+      }
+      Fl_Round_Button rb15 {
+        callback {tile=M_PLATFORMTL+2;}
+        tooltip {top right platform} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/TL.png} xywh {365 45 35 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb15,M_PLATFORMTL+2);}
+      }
+      Fl_Round_Button rb16 {
+        callback {tile=M_PLATFORMTL+18;}
+        tooltip {right platform} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/TL.png} xywh {365 65 40 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb16,M_PLATFORMTL+18);}
+      }
+      Fl_Round_Button rb17 {
+        callback {tile=M_PLATFORMTL+34;}
+        tooltip {bottom right platform} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/TL.png} xywh {365 85 35 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb17,M_PLATFORMTL+34);}
+      }
+      Fl_Round_Button rb18 {
+        callback {tile=M_SLIPPERYR;}
+        tooltip {Slippery right} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/slipR.png} xywh {535 65 40 20} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb18,M_SLIPPERYR);}
+      }
+      Fl_Round_Button rb19 {
+        callback {tile=M_SLIPPERYT;}
+        tooltip {Slippery ground} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/slipT.png} xywh {535 85 40 20} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb19,M_SLIPPERYT);}
+      }
+      Fl_Round_Button rb20 {
+        callback {tile=M_BIRDRIGHT1;}
+        tooltip Bird image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/bird.png} xywh {25 120 35 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb20,M_BIRDRIGHT1);}
+      }
+      Fl_Round_Button rb21 {
+        callback {tile=M_CHICKRIGHT1;}
+        tooltip Chick image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/chick.png} xywh {65 120 35 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb21,M_CHICKRIGHT1);}
+      }
+      Fl_Round_Button rb22 {
+        callback {tile=M_CHEST1;}
+        tooltip Chest image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/chest.png} xywh {105 115 55 35} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb22,M_CHEST1);}
+      }
+      Fl_Round_Button rb23 {
+        callback {tile=M_CHECKPOINT;}
+        tooltip Checkpoint image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/checkpoint.png} xywh {165 110 40 45} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb23,M_CHECKPOINT);}
+      }
+      Fl_Round_Button rb24 {
+        callback {tile=M_WALLCLIMBERLEFT;}
+        tooltip {Climber Left} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/crawlerleft.png} xywh {205 120 35 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb24,M_WALLCLIMBERLEFT);}
+      }
+      Fl_Round_Button rb25 {
+        callback {tile=M_WALLCLIMBERRIGHT;}
+        tooltip {Climber Right} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/crawlerright.png} xywh {240 120 35 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb25,M_WALLCLIMBERRIGHT);}
+      }
+      Fl_Round_Button rb26 {
+        callback {tile=M_FANCYSKY;}
+        tooltip Clouds image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/cloud.png} xywh {280 110 55 45} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb26,M_FANCYSKY);}
+      }
+      Fl_Round_Button rb27 {
+        callback {tile=M_EXIT;}
+        tooltip Exit image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/exit.png} xywh {335 105 65 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb27,M_EXIT);}
+      }
+      Fl_Round_Button rb28 {
+        callback {tile=M_TRAMPOLINE1;}
+        tooltip Trampoline image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/trampoline.png} xywh {25 155 80 20} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb28,M_TRAMPOLINE1);}
+      }
+      Fl_Round_Button rb29 {
+        callback {tile=M_BOMB;}
+        tooltip Bomb image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/bomb.png} xywh {110 155 35 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb29,M_BOMB);}
+      }
+      Fl_Round_Button rb30 {
+        callback {tile=M_TIMEBONUS;}
+        tooltip {Bonus time} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/clock.png} xywh {150 155 35 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb30,M_TIMEBONUS);}
+      }
+      Fl_Round_Button rb31 {
+        callback {tile=M_FULLHEALTH;}
+        tooltip {Full health} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/heart.png} xywh {190 155 35 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb31,M_FULLHEALTH);}
+      }
+      Fl_Round_Button rb32 {
+        callback {tile=M_LIFEBONUS;}
+        tooltip {Free Life} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/life.png} xywh {225 155 35 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb32,M_LIFEBONUS);}
+      }
+      Fl_Round_Button rb33 {
+        callback {tile=M_MINIHEALTH;}
+        tooltip {Mini Health} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/minihealth.png} xywh {260 155 35 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb33,M_MINIHEALTH);}
+      }
+      Fl_Round_Button rb34 {
+        callback {tile=M_SHIELD;}
+        tooltip {Shield (immunity to damage)} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/shield.png} xywh {295 155 35 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb34,M_SHIELD);}
+      }
+      Fl_Round_Button rb35 {
+        callback {tile=M_YINGYANG;}
+        tooltip {Doppleganger (Ying yang)} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/yingyang.png} xywh {330 155 35 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb35,M_YINGYANG);}
+      }
+      Fl_Round_Button rb36 {
+        callback {tile=M_FRUIT1;}
+        tooltip Fruit image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/fruit.png} xywh {370 130 40 55} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb36,M_FRUIT1);}
+      }
+      Fl_Round_Button rb37 {
+        label Sky
+        callback {tile=-1;}
+        tooltip Sky xywh {190 200 50 20} type Radio down_box ROUND_DOWN_BOX
+      }
+      Fl_Round_Button rb38 {
+        callback {tile=M_SLOPELEFT;}
+        tooltip {Ramp left} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/rampleft.png} xywh {410 100 50 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb38,M_SLOPELEFT);}
+      }
+      Fl_Round_Button rb39 {
+        callback {tile=M_SLOPERIGHT;}
+        tooltip {Ramp right} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/rampright.png} xywh {470 100 50 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb39,M_SLOPERIGHT);}
+      }
+      Fl_Round_Button rb40 {
+        callback {tile=M_SHOOTERRIGHT1;}
+        tooltip Shooter image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/shooter.png} xywh {365 190 45 30} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb40,M_SHOOTERRIGHT1);}
+      }
+      Fl_Round_Button rb41 {
+        callback {tile=M_RING;}
+        tooltip {Ring (3 per level)} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/ring.png} xywh {265 180 60 45} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb41,M_RING);}
+      }
+      Fl_Round_Button rb42 {
+        label Start
+        callback {tile=0;}
+        tooltip {Start point for hero} xywh {190 180 55 20} type Radio down_box ROUND_DOWN_BOX
+      }
+      Fl_Round_Button rb43 {
+        callback {tile=M_45SLOPELEFT;}
+        tooltip {left 45 degree} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/45left.png} xywh {575 45 35 20} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb43,M_45SLOPELEFT);}
+      }
+      Fl_Round_Button rb44 {
+        callback {tile=M_45SLOPERIGHT;}
+        tooltip {right 45 degree} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/45right.png} xywh {615 45 40 20} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb44,M_45SLOPERIGHT);}
+      }
+      Fl_Round_Button rb45 {
+        callback {tile=M_STEEPSLOPELEFT;}
+        tooltip {left steep} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/steepleft.png} xywh {575 70 40 35} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb45,M_STEEPSLOPELEFT);}
+      }
+      Fl_Round_Button rb46 {
+        callback {tile=M_STEEPSLOPERIGHT;}
+        tooltip {right steep} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/steepright.png} xywh {615 70 40 35} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb46,M_STEEPSLOPERIGHT);}
+      }
+      Fl_Round_Button rb47 {
+        callback {tile=M_GENTLESLOPELEFT;}
+        tooltip {gentle left slope} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/gentleleft.png} xywh {575 105 70 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb47,M_GENTLESLOPELEFT);}
+      }
+      Fl_Round_Button rb48 {
+        callback {tile=M_GENTLESLOPERIGHT;}
+        tooltip {gentle right slope} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/gentleright.png} xywh {645 105 70 25} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb48,M_GENTLESLOPERIGHT);}
+      }
+      Fl_Round_Button rb49 {
+        callback {tile=M_POUNDPLATFORM;}
+        tooltip {Pound through ground} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/poundplatform.png} xywh {660 45 35 20} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb49,M_POUNDPLATFORM);}
+      }
+      Fl_Round_Button rb50 {
+        callback {tile=M_ROCKETPLATFORM;}
+        tooltip {Rocket through ground} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/rocketthrough.png} xywh {660 75 40 20} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb50,M_ROCKETPLATFORM);}
+      }
+      Fl_Round_Button rb51 {
+        callback {tile=M_EXPLODINGGROUND;}
+        tooltip {Exploding ground} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/exploding.png} xywh {335 130 35 20} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb51,M_EXPLODINGGROUND);}
+      }
+      Fl_Round_Button rb52 {
+        callback {tile=M_BOMBABLEWALL;}
+        tooltip {Bombable wall} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/poundplatform.png} xywh {25 180 35 20} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb52,M_BOMBABLEWALL);}
+      }
+      Fl_Round_Button rb53 {
+        callback {tile=M_INVISIBLEPLATFORM;}
+        tooltip {Invisible ground} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/poundplatform.png} xywh {65 180 35 20} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb53,M_INVISIBLEPLATFORM);}
+      }
+      Fl_Round_Button rb54 {
+        callback {tile=M_EVILDUCKLEFT1;}
+        tooltip {Anders the Evil Duck} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/evilduck.png} xywh {110 180 70 40} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb54,M_EVILDUCKLEFT1);}
+      }
+      Fl_Round_Button rb55 {
+        callback {tile=M_SLIPPERY45LEFT;}
+        tooltip {Slippery Slope Left} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/poundplatform.png} xywh {25 200 35 20} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb55,M_SLIPPERY45LEFT);}
+      }
+      Fl_Round_Button rb56 {
+        callback {tile=M_SLIPPERY45RIGHT;}
+        tooltip {Slippery slope right} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/poundplatform.png} xywh {65 200 35 20} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb56,M_SLIPPERY45RIGHT);}
+      }
+      Fl_Round_Button rb57 {
+        callback {tile=M_YELLOWTELEPORTER;}
+        tooltip {Yellow teleporter (2 per level)} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/ring.png} xywh {420 175 60 45} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb57,M_YELLOWTELEPORTER);}
+      }
+      Fl_Round_Button rb58 {
+        callback {tile=M_BLUETELEPORTER;}
+        tooltip {Blue teleporter (2 per level)} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/ring.png} xywh {485 175 60 45} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb58,M_BLUETELEPORTER);}
+      }
+      Fl_Round_Button rb59 {
+        callback {tile=M_GREENTELEPORTER;}
+        tooltip {Green teleporter (2 per level)} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/ring.png} xywh {550 175 60 45} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb59,M_GREENTELEPORTER);}
+      }
+      Fl_Round_Button rb60 {
+        callback {tile=M_REDTELEPORTER;}
+        tooltip {Red teleporter (2 per level)} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/ring.png} xywh {615 175 60 45} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb60,M_REDTELEPORTER);}
+      }
+      Fl_Round_Button rb61 {
+        callback {tile=M_YELLOWKEY;}
+        tooltip {Yellow Key (opens yellow doors)} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/poundplatform.png} xywh {685 130 35 20} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb61,M_YELLOWKEY);}
+      }
+      Fl_Round_Button rb62 {
+        callback {tile=M_BLUEKEY;}
+        tooltip {Blue key (opens blue door)} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/poundplatform.png} xywh {685 150 35 20} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb62,M_BLUEKEY);}
+      }
+      Fl_Round_Button rb63 {
+        callback {tile=M_GREENKEY;}
+        tooltip {Green key (opens green doors)} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/poundplatform.png} xywh {685 170 35 20} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb63,M_GREENKEY);}
+      }
+      Fl_Round_Button rb64 {
+        callback {tile=M_REDKEY;}
+        tooltip {Red key (opens red doors)} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/poundplatform.png} xywh {685 190 35 20} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb64,M_REDKEY);}
+      }
+      Fl_Round_Button rb65 {
+        callback {tile=M_YELLOWDOOR1;}
+        tooltip {Yellow door} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/solidground.png} xywh {410 125 50 50} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb65,M_YELLOWDOOR1);}
+      }
+      Fl_Round_Button rb66 {
+        callback {tile=M_BLUEDOOR1;}
+        tooltip {Blue door} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/secretarea.png} xywh {460 125 50 50} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb66,M_BLUEDOOR1);}
+      }
+      Fl_Round_Button rb67 {
+        callback {tile=M_GREENDOOR1;}
+        tooltip {Green door} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/fancysolidground.png} xywh {515 125 50 50} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb67,M_GREENDOOR1);}
+      }
+      Fl_Round_Button rb68 {
+        callback {tile=M_REDDOOR1;}
+        tooltip {Red door} image {/home/dalew/psp/cc/jumpgunnarjump/src/edgfx/tree.png} xywh {565 125 50 50} type Radio down_box ROUND_DOWN_BOX
+        code0 {update_button(rb68,M_REDDOOR1);}
+      }
+    }
+    Fl_Menu_Bar {} {
+      xywh {0 0 720 25}
+    } {
+      submenu {} {
+        label {&File} open
+        xywh {0 0 100 20}
+      } {
+        menuitem {} {
+          label {&New}
+          callback {new_level();}
+          tooltip {Start a new level} xywh {0 0 100 20} shortcut 0x4006e
+        }
+        menuitem {} {
+          label {&Open...}
+          callback {open_level();}
+          tooltip {Open an existing level} xywh {0 0 100 20} shortcut 0x4006f divider
+        }
+        menuitem {} {
+          label {&Save}
+          callback {save_level();}
+          tooltip {Save the current level} xywh {0 0 100 20} shortcut 0x40073
+        }
+        menuitem {} {
+          label {Save &As...}
+          callback {saveas_level();}
+          tooltip {Save as a new level} xywh {0 0 100 20} shortcut 0x40061 divider
+        }
+        menuitem {} {
+          label Quit
+          callback {quit_editor();}
+          tooltip {Exit the editor forever!} xywh {0 0 100 20} shortcut 0x40071
+        }
+      }
+      submenu {} {
+        label {&Edit} open
+        xywh {0 0 100 20}
+      } {
+        menuitem {} {
+          label Undo
+          callback {undo();}
+          tooltip {Enter selection mode} xywh {5 5 100 20} shortcut 0x4007a
+        }
+        menuitem {} {
+          label Redo
+          callback {redo();}
+          xywh {0 0 100 20} shortcut 0x40079
+        }
+      }
+      submenu {} {
+        label {&Help} open
+        xywh {0 0 100 20}
+      } {
+        menuitem {} {
+          label {&Quick Start}
+          callback {make_quickstart()->show();}
+          tooltip {Brief instructions for editor} xywh {0 0 100 20} shortcut 0xffbe
+        }
+        menuitem {} {
+          label {&About}
+          callback {make_about()->show();}
+          tooltip {Who made this, and what version is it.} xywh {0 0 100 20} shortcut 0xffc9
+        }
+      }
+    }
+    Fl_Counter counterWidth {
+      label Width
+      xywh {15 235 70 25} type Simple minimum 16 maximum 1024 step 16 value 32
+    }
+    Fl_Counter counterHeight {
+      label Height
+      xywh {95 235 70 25} type Simple minimum 16 maximum 1024 step 16 value 16
+    }
+    Fl_Scrollbar verticalScroll {
+      callback {game.t=TILEHEIGHT*(int)verticalScroll->value();
+editorMap->redraw();}
+      xywh {690 235 25 285} maximum 16
+      code0 {o->linesize(8);}
+    }
+    Fl_Scrollbar horizontalScroll {
+      callback {game.l=TILEWIDTH*(int)horizontalScroll->value();
+editorMap->redraw();}
+      xywh {195 525 490 25} type Horizontal
+    }
+    Fl_Box {} {
+      xywh {195 235 490 285} box DOWN_BOX
+    }
+    Fl_Box editorMap {
+      xywh {200 243 480 272}
+      class Fl_Editor_Map
+    }
+    Fl_Button comments {
+      label {Comments...}
+      callback {const char *s=fl_input("Comments for thie level",levelComments);
+if(s) strcpy(levelComments,s);}
+      xywh {45 285 95 30}
+    }
+    Fl_Box previewMap {
+      label {overall map}
+      tooltip {Preview of the overall map} xywh {5 330 180 190} box ENGRAVED_BOX align 2
+      class Fl_Preview_Map
+    }
+  }
+} 
+
+Function {make_about()} {} {
+  Fl_Window aboutBox {
+    label {About Jump Gunnar Jump Level Editor} open
+    xywh {-32000 -32000 267 100} type Double hide
+  } {
+    Fl_Return_Button {} {
+      label OK
+      callback {aboutBox->hide();
+delete aboutBox;
+aboutBox=0;}
+      xywh {155 60 90 25}
+    }
+    Fl_Output {} {
+      label {Jump Gunnar Jump Level Editor by HardHat}
+      xywh {25 25 230 25} box THIN_UP_BOX align 5
+      code0 {o->value("Version 1.2, 2006-06-28");}
+    }
+  }
+} 
+
+Function {make_quickstart()} {open
+} {
+  Fl_Window quickstartWindow {
+    label {Quick Start for UM Ed} open
+    xywh {-32000 -32000 428 309} type Double hide
+  } {
+    Fl_Output {} {
+      xywh {0 5 425 300} type Multiline
+      code0 {o->value("Select new or load an existing level to start.\\nThen,\\nSelect a radio button up top for which sprite to draw on the map.\\nUse left mouse button to draw (some sprites you need to click for each one), or use right mouse button for sky, or middle button for solid ground.\\nUse undo and redo to if you are indecisive.\\nEmail: hardhat@mail.ru\\nhttp://www.adamcon.org/~dmwick/psp/");}
+    }
+  }
+} 
+
+decl {\#include<stack>} {} 
+
+decl {std::stack<Undo> undoList,redoList;} {} 
+
+Function {new_level()} {open
+} {
+  code {int w,h;
+if(dirty) {
+	if(fl_ask("Changes have been made.  Save first?")) {
+		save_level();
+	}
+}
+const char *s=fl_input("What width of map?","128");
+w=128;
+if(!s) return;
+sscanf(s,"%d",&w);
+if(w<0) w=32;
+s=fl_input("What height of map?","128");
+h=128;
+if(!s) return;
+sscanf(s,"%d",&h);
+if(h<0) h=32;
+construct_level(w,h);
+resized_map();
+dirty=0;
+while(!undoList.empty()) undoList.pop();
+while(!redoList.empty()) redoList.pop();} {}
+} 
+
+Function {save_level()} {open
+} {
+  code {if(strlen(currentlevel)>4) {
+	save_level(currentlevel);
+	dirty=0;
+} else {
+	saveas_level();
+}} {}
+} 
+
+Function {saveas_level()} {open
+} {
+  code {char *fname=fl_file_chooser("Save As Level","*.txt",0);
+if(fname) {
+	strcpy(currentlevel,fname);
+	save_level(fname);
+}} {}
+} 
+
+Function {open_level()} {open
+} {
+  code {char *fname=fl_file_chooser("Open Level File","*.txt",0);
+if(fname) {
+   editMode=1;
+   load_level(fname);
+   strcpy(currentlevel,fname);
+}
+resized_map();
+dirty=0;
+while(!undoList.empty()) undoList.pop();
+while(!redoList.empty()) redoList.pop();} {}
+} 
+
+Function {quit_editor()} {} {
+  code {exit(1);} {}
+} 
+
+Function {draw_tile(int id,int x,int y)} {open C return_type void
+} {
+  code {//if(x+TILEWIDTH+editorMap->x()<0) return;
+//if(y+TILEHEIGHT+editorMap->y()<0) return;
+if(x>=TILEWIDTH*SCREENWIDTH) return;
+if(y>=TILEHEIGHT*SCREENHEIGHT) return;
+
+//if(id>=0) printf("Drawing tile %d at %d,%d +(%d,%d)\\n",id,x,y,editorMap->x(),editorMap->y());
+y+=editorMap->y();
+x+=editorMap->x();
+if(!mapImage) mapImage=new Fl_PNG_Image("gfx.png");
+if(mapImage) {
+	fl_color(proposed?0x80:0,proposed?0xff:0xc0,proposed?0x80:0xc0);
+	fl_rectf(x,y,TILEWIDTH,TILEHEIGHT);
+	if(id>0) mapImage->draw(x,y,TILEWIDTH,TILEHEIGHT,(id%TILESACROSS)*TILEWIDTH,(id/TILESACROSS)*TILEHEIGHT);
+} else {
+	fl_color((uchar)(id&1?0xff:0),(uchar)(id&2?0xff:0),(uchar)(id&4?0xff:0));
+	fl_rectf(x,y,TILEWIDTH,TILEHEIGHT);
+}} {}
+} 
+
+Function {draw_tile_rect(int id,int x,int y,int w,int h)} {open C return_type void
+} {} 
+
+Function {play_sound(int id)} {open C return_type void
+} {} 
+
+Function {resized_map()} {open return_type void
+} {
+  code {counterWidth->value(game.w);
+counterHeight->value(game.h);
+horizontalScroll->value(game.l/TILEWIDTH,SCREENWIDTH,0,game.w);
+verticalScroll->value(game.t/TILEHEIGHT,SCREENHEIGHT,0,game.h);
+//editorMap->size(game.w*TILEWIDTH,game.h*TILEHEIGHT);
+editorMap->damage(FL_DAMAGE_ALL);
+previewMap->damage(FL_DAMAGE_ALL);} {}
+} 
+
+Function {update_button(Fl_Round_Button *button,int tile)} {open return_type void
+} {
+  code {Fl_Image *img;
+struct TileProp *tileProp=tile_to_prop(tile);
+int w=1,h=1;
+if(tileProp) {
+	w=tileProp->gfxw;
+	h=tileProp->gfxh;
+}
+if(mapImage && img) {
+	unsigned char *buf=new unsigned char[w*TILEWIDTH*h*TILEHEIGHT*3];
+	int x,y;
+	int ox,oy;
+	int i;
+	int depth=mapImage->d();
+
+	const char *rawGfx=mapImage->data()[0];
+	for(i=0;i<w*TILEWIDTH*h*TILEHEIGHT*3;i++) {
+		switch(i%3) {
+		case 0: buf[i]=0x88; break;
+		case 1: buf[i]=0xcc; break;
+		case 2: buf[i]=0xff; break;
+		case 3: buf[i]=0xff; break;
+		}
+	}
+	i=0;
+	ox=(tile%TILESACROSS)*TILEWIDTH;
+	oy=(tile/TILESACROSS)*TILEHEIGHT;
+	for(y=0;y<TILEHEIGHT*h;y++) {
+		for(x=0;x<TILEWIDTH*w;x++) {
+			buf[i++]=rawGfx[((oy+y)*TILESACROSS*TILEWIDTH+(ox+x))*depth];
+			buf[i++]=rawGfx[((oy+y)*TILESACROSS*TILEWIDTH+(ox+x))*depth+1];
+			buf[i++]=rawGfx[((oy+y)*TILESACROSS*TILEWIDTH+(ox+x))*depth+2];
+			if(depth>3) {
+				if(rawGfx[((oy+y)*TILESACROSS*TILEWIDTH+(ox+x))*depth+3]==0) {
+					buf[i-3]=0x88;
+					buf[i-2]=0xcc;
+					buf[i-1]=0xff;
+				}
+			}
+		}
+	}
+	img=new Fl_RGB_Image(buf,w*TILEWIDTH,h*TILEHEIGHT,3);
+	button->image(img);
+}} {}
+} 
+
+Function {undo()} {open return_type void
+} {
+  code {if(!undoList.empty()) {
+	int i,j;
+	int tileLink=undoList.top().tile;
+	dirty--;
+
+	while(undoList.size()>0 && undoList.top().tile==tileLink) {
+		// We have something.
+		Undo undoItem=undoList.top();
+		undoList.pop();
+		Undo redoItem;
+		redoItem.x=undoItem.x;
+		redoItem.y=undoItem.y;
+		int x=redoItem.x;
+		int y=redoItem.y;
+		redoItem.w=undoItem.w;
+		redoItem.h=undoItem.h;
+		redoItem.tile=undoItem.tile;
+		for(j=0;j<undoItem.h;j++) {
+			for(i=0;i<undoItem.w;i++) {
+				if(x+i>game.w || y+j>game.h) continue;
+				redoItem.cells[j][i]=game.map[(x+i)+game.w*(y+j)];
+				game.map[(x+i)+game.w*(y+j)]=undoItem.cells[j][i];
+			}
+		}
+	
+		redoList.push(redoItem);
+		editorMap->damage(FL_DAMAGE_ALL,x*TILEWIDTH,y*TILEHEIGHT,undoItem.w*TILEWIDTH,undoItem.h*TILEHEIGHT);
+	}
+	editorMap->redraw();
+	previewMap->redraw();
+}} {}
+} 
+
+Function {redo()} {open
+} {
+  code {if(!redoList.empty()) {
+	int i,j;
+	int tileLink=redoList.top().tile;
+	dirty++;
+
+	while(redoList.size()>0 && redoList.top().tile==tileLink) {
+		// We have something.
+		Undo undoItem=redoList.top();
+		redoList.pop();
+		Undo redoItem;
+		redoItem.x=undoItem.x;
+		redoItem.y=undoItem.y;
+		int x=redoItem.x;
+		int y=redoItem.y;
+		redoItem.w=undoItem.w;
+		redoItem.h=undoItem.h;
+		redoItem.tile=undoItem.tile;
+		for(j=0;j<undoItem.h;j++) {
+			for(i=0;i<undoItem.w;i++) {
+				if(x+i>game.w || y+j>game.h) continue;
+				redoItem.cells[j][i]=game.map[(x+i)+game.w*(y+j)];
+				game.map[(x+i)+game.w*(y+j)]=undoItem.cells[j][i];
+			}
+		}
+	
+		undoList.push(redoItem);
+		editorMap->damage(FL_DAMAGE_ALL,x*TILEWIDTH,y*TILEHEIGHT,undoItem.w*TILEWIDTH,undoItem.h*TILEHEIGHT);
+	}
+	editorMap->redraw();
+	previewMap->redraw();
+}} {}
+} 
+
+Function {save_undo(int x,int y, int w, int h, int tile)} {open return_type void
+} {
+  code {while(!redoList.empty()) redoList.pop();
+dirty++;
+int i,j;
+
+Undo undoItem;
+undoItem.x=x;
+undoItem.y=y;
+undoItem.w=w;
+undoItem.h=h;
+undoItem.tile=tile;
+for(j=0;j<undoItem.h;j++) {
+	for(i=0;i<undoItem.w;i++) {
+		if(x+i>game.w || y+j>game.h) continue;
+		undoItem.cells[j][i]=game.map[(x+i)+game.w*(y+j)];
+	}
+}
+	
+undoList.push(undoItem);} {}
+} 
+
+class Undo {open
+} {
+  decl {int cells[3][3];} {public
+  }
+  decl {int x,y,w,h;} {public
+  }
+  decl {int tile;} {public
+  }
+} 
